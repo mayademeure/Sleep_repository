@@ -86,15 +86,16 @@ class Visualizer:
         - age_col: Column name for Age (continuous variable).
         - bmi_col: Column name for BMI Category (encoded as integers).
         """
-        # Step 1: Map encoded BMI values to original categorical labels
+        # Step 1: Check if BMI is already mapped
         bmi_mapping = {0: "Normal", 1: "Overweight", 2: "Obese"}
-        self.data[bmi_col] = self.data[bmi_col].map(bmi_mapping)
+        if self.data[bmi_col].iloc[0] in bmi_mapping:  # Only map if integers are found
+            self.data[bmi_col] = self.data[bmi_col].map(bmi_mapping)
 
         # Step 2: Bin the Age column into predefined age groups
         bins = [27, 35, 43, 51, 60]
         bin_labels = ["27-34", "35-42", "43-50", "51-59"]
         self.data['Age Group'] = pd.cut(self.data[age_col], bins=bins, labels=bin_labels, right=False)
-        
+
         # Step 3: Calculate BMI proportions within each Age Group
         bmi_proportions = (
             self.data.groupby('Age Group')[bmi_col]
@@ -102,7 +103,7 @@ class Visualizer:
             .unstack()
             .fillna(0)
         )
-        
+
         # Step 4: Plot the stacked bar chart
         bmi_proportions.plot(kind="bar", stacked=True, figsize=(10, 6), colormap="tab10")
         plt.title("Proportion of BMI Categories by Age Group")
@@ -112,13 +113,17 @@ class Visualizer:
         plt.xticks(rotation=45)
         plt.show()
 
+
     def plot_sleep_disorder_bmi(self, bmi_col, sleep_disorder_col, bmi_mapping, sleep_disorder_mapping):
         """
         Plot a stacked bar chart to show the relationship between Sleep Disorder and BMI Category.
         """
-        # Step 1: Map encoded values to human-readable categories
-        self.data[bmi_col] = self.data[bmi_col].map(bmi_mapping)
-        self.data[sleep_disorder_col] = self.data[sleep_disorder_col].map(sleep_disorder_mapping)
+        # Step 1: Check if BMI is already mapped
+        if self.data[bmi_col].iloc[0] in bmi_mapping:  # Only map if integers are found
+            self.data[bmi_col] = self.data[bmi_col].map(bmi_mapping)
+        # Map Sleep Disorder if necessary
+        if self.data[sleep_disorder_col].iloc[0] in sleep_disorder_mapping:
+            self.data[sleep_disorder_col] = self.data[sleep_disorder_col].map(sleep_disorder_mapping)
 
         # Handle missing values
         self.data = self.data.dropna(subset=[bmi_col, sleep_disorder_col])
@@ -147,6 +152,7 @@ class Visualizer:
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.show()
+
 
 
 

@@ -40,11 +40,11 @@ if __name__ == "__main__":
             visualizer.plot_scatter("Sleep Duration", "Stress Level")
             visualizer.plot_scatter("Quality of Sleep", "Heart Rate")
 
-        if args.viz in ["all", "BMI_and_age"]:
-            visualizer.plot_bmi_age_relationship(age_col="Age", bmi_col="BMI Category")
-
         if args.viz in ["all", "bp_boxplots"]:
             visualizer.plot_bp_boxplots(bp_cols=["Systolic BP", "Diastolic BP"], group_col="BMI Category")
+
+        if args.viz in ["all", "BMI_and_age"]:
+            visualizer.plot_bmi_age_relationship(age_col="Age", bmi_col="BMI Category")
 
         if args.viz in ["all", "BMI_and_sleep"]:
             bmi_mapping = {0: "Normal", 1: "Overweight", 2: "Obese"}
@@ -57,6 +57,10 @@ if __name__ == "__main__":
                 bmi_mapping=bmi_mapping,
                 sleep_disorder_mapping=sleep_disorder_mapping
             )
+
+
+
+
 
 
     if args.run in ["all", "analysis"]:
